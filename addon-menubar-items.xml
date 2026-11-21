@@ -25,6 +25,10 @@
         <binding><command>nasal</command><script>aerojudge.armKey("roll");</script></binding>
       </item>
       <item>
+        <label>Arm: Four-point roll</label>
+        <binding><command>nasal</command><script>aerojudge.armKey("fourpoint");</script></binding>
+      </item>
+      <item>
         <label>Arm: Loop</label>
         <binding><command>nasal</command><script>aerojudge.armKey("loop");</script></binding>
       </item>

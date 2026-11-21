@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <PropertyList>
 
-  <defaults>
+  <defaults>>
     <properties>
       <pitch>/orientation/pitch-deg</pitch>
       <roll>/orientation/roll-deg</roll>
@@ -57,6 +57,25 @@
       <rate-cv-pct>   <tol>10</tol> <per-point>5</per-point>  <cap>25</cap> </rate-cv-pct>
       <exit-roll-deg> <tol>0</tol>  <per-point>5</per-point>  <cap>20</cap> </exit-roll-deg>
     </aileron-roll>
+
+    <four-point-roll>
+      <start-roll-deg>15</start-roll-deg>
+      <stop-rate-dps>25</stop-rate-dps>          <!-- below this = paused -->
+      <min-travel-deg>30</min-travel-deg>        <!-- roll needed between pauses -->
+      <min-hold-sec>0.25</min-hold-sec>          <!-- shorter pauses don't count -->
+      <settle-start-deg>340</settle-start-deg>
+      <end-rate-dps>10</end-rate-dps>
+      <overroll-deg>60</overroll-deg>
+      <settle-timeout-sec>2.5</settle-timeout-sec>
+      <timeout-sec>45</timeout-sec>
+      <missing-stop-pts>10</missing-stop-pts>    <!-- per missing pause -->
+      <missing-stop-cap>30</missing-stop-cap>
+      <stop-angle-deg>  <tol>3</tol>   <per-point>5</per-point>    <cap>20</cap> </stop-angle-deg>
+      <hold-spread-sec> <tol>0.4</tol> <per-point>0.25</per-point> <cap>10</cap> </hold-spread-sec>
+      <heading-deg>     <tol>3</tol>   <per-point>5</per-point>    <cap>15</cap> </heading-deg>
+      <alt-ft>          <tol>50</tol>  <per-point>25</per-point>   <cap>15</cap> </alt-ft>
+      <exit-roll-deg>   <tol>3</tol>   <per-point>5</per-point>    <cap>10</cap> </exit-roll-deg>
+    </four-point-roll>
 
     <loop>
       <start-deg>20</start-deg>

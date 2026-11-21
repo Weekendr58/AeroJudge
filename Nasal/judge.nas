@@ -433,7 +433,7 @@ var tick = func {
 
 # ---------------------------------------------------------------- maneuvers
 var MANEUVERS = {};
-var ORDER = ["steep", "roll", "loop", "immelmann", "splits"];
+var ORDER = ["steep", "roll", "fourpoint", "loop", "immelmann", "splits"];
 
 # --- 1. Steep turn --------------------------------------------------------
 MANEUVERS["steep"] = {
@@ -563,6 +563,95 @@ MANEUVERS["roll"] = {
         append(items, mk("Roll-rate variation",
                          sprintf("%.1f %% (avg %.0f dps)", cv, fabs(mean)),
                          ptsFor(cv - c.tol, c.per, c.cap)));
+        addCrit(items, "Roll angle at exit", wrap180(s.roll - S.entry.roll), "deg", P ~ "exit-roll-deg");
+    },
+};
+
+# --- 2b. Four-point roll --------------------------------------------------
+# 360 deg of roll in four 90 deg steps. Pauses at 90/180/270 are found from the
+# roll rate, the fourth point is the exit at 360.
+MANEUVERS["fourpoint"] = {
+    label: "Four-point roll",
+    path:  "four-point-roll",
+    init: func(s) {
+        S.m = { phase: "wait", dir: 1, ts: [], us: [], maxHdg: 0, tSettle: 0,
+                inStop: 0, sT: 0, sSum: 0, sN: 0, lastAt: 0, stops: [] };
+    },
+    step: func(s) {
+        var m = S.m;
+        var P = "four-point-roll/";
+        if (m.phase == "wait") {
+            if (fabs(S.rollU) > cfgNum(P ~ "start-roll-deg", 15)) {
+                begin(s);
+                m.dir = sgn(S.rollU);
+                m.phase = "roll";
+            } else { return 0; }
+        }
+        var rolled = m.dir * S.rollU;
+        append(m.ts, s.t);
+        append(m.us, rolled);
+        m.maxHdg = fmax(m.maxHdg, fabs(wrap180(s.hdg - S.entry.hdg)));
+        var n = size(m.us);
+        var rate = 0;
+        if (s.rr != nil) {
+            rate = m.dir * s.rr;      # measured: signed along the roll direction
+        } elsif (n > 4) {
+            rate = (m.us[n-1] - m.us[n-5]) / (m.ts[n-1] - m.ts[n-5]);
+        }
+        var stopRate = cfgNum(P ~ "stop-rate-dps", 25);
+        if (m.phase == "roll") {
+            if (!m.inStop) {
+                # pause starts when the rate drops after moving on from the last point
+                if (rolled - m.lastAt >= cfgNum(P ~ "min-travel-deg", 30) and fabs(rate) < stopRate) {
+                    m.inStop = 1;  m.sT = s.t;  m.sSum = rolled;  m.sN = 1;
+                }
+            } else if (fabs(rate) < 2 * stopRate) {
+                m.sSum += rolled;  m.sN += 1;
+            } else {
+                # rolling again: pause only counts if it was held long enough
+                m.inStop = 0;
+                var hold = s.t - m.sT;
+                if (hold >= cfgNum(P ~ "min-hold-sec", 0.25)) {
+                    var at = m.sSum / m.sN;
+                    var k = int(at / 90 + 0.5);     # nearest point, at is positive
+                    k = k < 1 ? 1 : (k > 3 ? 3 : k);
+                    append(m.stops, { hold: hold, err: at - 90 * k });
+                    m.lastAt = at;
+                }
+            }
+            if (rolled >= cfgNum(P ~ "settle-start-deg", 340)) { m.phase = "settle"; m.tSettle = s.t; }
+        } else if (m.phase == "settle") {
+            if (rolled >= 360 + cfgNum(P ~ "overroll-deg", 60)
+                or fabs(rate) < cfgNum(P ~ "end-rate-dps", 10)
+                or s.t - m.tSettle > cfgNum(P ~ "settle-timeout-sec", 2.5)) { return 1; }
+        }
+        return 0;
+    },
+    why: func(m) {
+        return sprintf("%d of 3 pauses found before the roll stopped", size(m.stops));
+    },
+    score: func(s, items) {
+        var m = S.m;
+        var P = "four-point-roll/";
+        var n = size(m.stops);
+        var missing = fmax(0, 3 - n);
+        append(items, mk("Pauses found", sprintf("%d of 3", n),
+                         fmin(cfgNum(P ~ "missing-stop-cap", 30), missing * cfgNum(P ~ "missing-stop-pts", 10))));
+        var maxErr = 0;  var hmin = 1e9;  var hmax = 0;
+        foreach (var st; m.stops) {
+            maxErr = fmax(maxErr, fabs(st.err));
+            hmin = fmin(hmin, st.hold);  hmax = fmax(hmax, st.hold);
+        }
+        addCrit(items, "Pause angle error (max)", maxErr, "deg", P ~ "stop-angle-deg");
+        if (n >= 2) {
+            var c = crit(P ~ "hold-spread-sec");
+            append(items, mk("Pause length spread", sprintf("%.2f s (%.2f-%.2f)", hmax - hmin, hmin, hmax),
+                             ptsFor((hmax - hmin) - c.tol, c.per, c.cap)));
+        } else {
+            append(items, mk("Pause length spread", "n/a", 0));
+        }
+        addCrit(items, "Heading drift (max)", m.maxHdg, "deg", P ~ "heading-deg");
+        addCrit(items, "Altitude change", s.alt - S.entry.alt, "ft", P ~ "alt-ft");
         addCrit(items, "Roll angle at exit", wrap180(s.roll - S.entry.roll), "deg", P ~ "exit-roll-deg");
     },
 };
@@ -712,7 +801,7 @@ var arm = func {
     ticker.start();
 }
 
-# Select a maneuver by key ("steep", "roll", "loop", "immelmann", "splits") and arm it.
+# Select a maneuver by key ("steep", "roll", "fourpoint", "loop", "immelmann", "splits") and arm it.
 # Used by the menu so no panel is needed.
 var armKey = func(key) {
     if (!contains(MANEUVERS, key)) { return; }
