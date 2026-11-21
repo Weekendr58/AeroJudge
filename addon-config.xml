@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<PropertyList>
+
+  <defaults>>
+    <properties>
+      <pitch>/orientation/pitch-deg</pitch>
+      <roll>/orientation/roll-deg</roll>
+      <heading>/orientation/heading-deg</heading>
+      <altitude>/position/altitude-ft</altitude>
+      <agl>/position/altitude-agl-ft</agl>
+      <ias>/velocities/airspeed-kt</ias>
+      <g>/accelerations/pilot-g</g>
+      <roll-rate>/orientation/roll-rate-degps</roll-rate>
+    </properties>
+
+    <show-on-start>0</show-on-start>
+
+    <arm-level-deg>15</arm-level-deg>
+    <entry-level-deg>6</entry-level-deg>
+    <abandon-level-sec>3</abandon-level-sec>
+    <entry-lag-sec>1.0</entry-lag-sec>
+
+    <limits>
+      <max-g>6.0</max-g>
+      <min-g>-3.0</min-g>
+      <vne-kt>200</vne-kt>
+      <hard-deck-mode>Warn</hard-deck-mode>
+      <hard-deck-agl-ft>1000</hard-deck-agl-ft>
+      <deck-warn> <per-point>100</per-point> <cap>30</cap> </deck-warn><!-- 1 pt per 100 ft below deck -->
+      <over-g>   <per-point>0.25</per-point> <cap>40</cap> </over-g>  <!-- 1 pt per 0.25 g over -->
+      <over-vne> <per-point>2</per-point>    <cap>40</cap> </over-vne><!-- 1 pt per 2 kt over  -->
+    </limits>
+
+    <steep-turn>
+      <start-roll-deg>20</start-roll-deg>
+      <bank-min-deg>45</bank-min-deg>
+      <bank-max-deg>60</bank-max-deg>
+      <turn-deg>360</turn-deg>
+      <rollout-lead-deg>25</rollout-lead-deg>
+      <settle-sec>1.0</settle-sec>
+      <timeout-sec>150</timeout-sec>
+      <bank>        <tol>0</tol>   <per-point>5</per-point>  <cap>20</cap> </bank>
+      <alt-ft>      <tol>100</tol> <per-point>25</per-point> <cap>25</cap> </alt-ft>
+      <ias-kt>      <tol>10</tol>  <per-point>5</per-point>  <cap>15</cap> </ias-kt>
+      <rollout-deg> <tol>0</tol>   <per-point>5</per-point>  <cap>20</cap> </rollout-deg>
+    </steep-turn>
+
+    <aileron-roll>
+      <start-roll-deg>15</start-roll-deg>
+      <settle-start-deg>340</settle-start-deg>
+      <end-rate-dps>10</end-rate-dps>
+      <overroll-deg>60</overroll-deg>
+      <settle-timeout-sec>2.5</settle-timeout-sec>
+      <timeout-sec>30</timeout-sec>
+      <heading-deg>   <tol>0</tol>  <per-point>5</per-point>  <cap>20</cap> </heading-deg>
+      <alt-ft>        <tol>50</tol> <per-point>25</per-point> <cap>20</cap> </alt-ft>
+      <rate-cv-pct>   <tol>10</tol> <per-point>5</per-point>  <cap>25</cap> </rate-cv-pct>
+      <exit-roll-deg> <tol>0</tol>  <per-point>5</per-point>  <cap>20</cap> </exit-roll-deg>
+    </aileron-roll>
+
+    <loop>
+      <start-deg>20</start-deg>
+      <exit-deg>350</exit-deg>
+      <overrun-deg>375</overrun-deg>
+      <settle-sec>1.0</settle-sec>
+      <timeout-sec>60</timeout-sec>
+      <heading-deg>    <tol>0</tol>   <per-point>5</per-point>  <cap>20</cap> </heading-deg>
+      <alt-ft>         <tol>100</tol> <per-point>50</per-point> <cap>20</cap> </alt-ft>
+      <ias-kt>         <tol>15</tol>  <per-point>5</per-point>  <cap>15</cap> </ias-kt>
+      <exit-pitch-deg> <tol>0</tol>   <per-point>5</per-point>  <cap>15</cap> </exit-pitch-deg>
+      <axis-deg>       <tol>5</tol>   <per-point>5</per-point>  <cap>20</cap> </axis-deg>
+    </loop>
+
+    <immelmann>
+      <start-deg>20</start-deg>
+      <pull-done-deg>150</pull-done-deg>
+      <end-roll-deg>15</end-roll-deg>
+      <settle-sec>1.0</settle-sec>
+      <timeout-sec>60</timeout-sec>
+      <heading-deg>    <tol>0</tol> <per-point>5</per-point> <cap>25</cap> </heading-deg>
+      <!-- Expected altitude gain window-->
+      <alt-gain-ft>    <lo>300</lo> <hi>3000</hi> <per-point>100</per-point> <cap>15</cap> </alt-gain-ft>
+      <exit-roll-deg>  <tol>0</tol> <per-point>5</per-point> <cap>15</cap> </exit-roll-deg>
+      <exit-pitch-deg> <tol>0</tol> <per-point>5</per-point> <cap>15</cap> </exit-pitch-deg>
+      <!-- Minimum acceptable exit speed (kt). -->
+      <exit-ias-kt>    <lo>70</lo>  <per-point>5</per-point> <cap>15</cap> </exit-ias-kt>
+    </immelmann>
+
+    <split-s>
+      <roll-start-deg>30</roll-start-deg>
+      <inverted-roll-deg>150</inverted-roll-deg>
+      <pull-start-deg>15</pull-start-deg>
+      <exit-deg>165</exit-deg>
+      <overrun-deg>200</overrun-deg>
+      <settle-sec>1.0</settle-sec>
+      <timeout-sec>60</timeout-sec>
+      <inverted-deg>   <tol>0</tol> <per-point>5</per-point> <cap>15</cap> </inverted-deg>
+      <heading-deg>    <tol>0</tol> <per-point>5</per-point> <cap>25</cap> </heading-deg>
+      <alt-loss-ft>    <lo>300</lo> <hi>3000</hi> <per-point>100</per-point> <cap>15</cap> </alt-loss-ft>
+      <exit-roll-deg>  <tol>0</tol> <per-point>5</per-point> <cap>15</cap> </exit-roll-deg>
+      <exit-pitch-deg> <tol>0</tol> <per-point>5</per-point> <cap>15</cap> </exit-pitch-deg>
+    </split-s>
+
+  </defaults>
+
+  <!-- work in progress; do not use yet
+  <profile>
+    <n>My aircraft</n>
+    <match>aircraft-id</match>
+    <limits>
+      <max-g>...</max-g>
+      <min-g>...</min-g>
+      <vne-kt>...</vne-kt>
+    </limits>
+  </profile>
+  -->
+
+</PropertyList>

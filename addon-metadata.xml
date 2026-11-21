@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<PropertyList>
+  <meta>
+    <file-type type="string">FlightGear add-on metadata</file-type>
+    <format-version type="int">1</format-version>
+  </meta>
+
+  <addon>
+    <identifier type="string">org.flightgear.7558.AeroJudge</identifier>
+    <name type="string">Aerobatic Judge</name>
+    <version type="string">0.2.0</version>
+    <authors>
+      <author>
+        <name type="string">AeroJudge contributors</name>
+      </author>
+    </authors>
+    <short-description type="string">Aerobatic maneuvers rating addon</short-description>
+    <long-description type="string">
+      Scores steep turns, aileron rolls, loops, Immelmanns and Split-S maneuvers.
+    </long-description>
+    <min-FG-version type="string">2024.1.0</min-FG-version>
+  </addon>
+</PropertyList>
