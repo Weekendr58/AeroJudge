@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <PropertyList>
 
-  <defaults>>
+  <defaults>
     <properties>
       <pitch>/orientation/pitch-deg</pitch>
       <roll>/orientation/roll-deg</roll>
